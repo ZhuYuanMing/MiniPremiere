@@ -1,0 +1,43 @@
+language: cpp
+dist: xenial
+compiler: gcc
+
+before_install:
+  - export CMAKE_OPTIONS=${CMAKE_OPTIONS}" "${ENV_CMAKE_OPTIONS}
+  - export CXX_FLAGS=${CXX_FLAGS}" "${ENV_CXX_FLAGS}
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update  -qq
+install:
+  - sudo apt-get install -qq g++-7
+  - wget -c http://download.qt.io/official_releases/qt/5.13/5.13.0/qt-opensource-linux-x64-5.13.0.run
+  - sudo chmod +x qt-opensource-linux-x64-5.13.0.run
+  - sudo chmod +x ./extract-qt-installer ./install-qt
+  - sudo ./install-qt
+  - sudo apt-get install build-essential libfontconfig1 mesa-common-dev libglu1-mesa-dev
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 90
+  
+  - sudo apt-get install -y build-essential
+  - sudo apt-get install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libqt5gui5 libqt5gui5 qt5-default qttools5-dev-tools libqt5concurrent5 libqt5widgets5
+  - sudo apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+  - git clone https://github.com/opencv/opencv.git
+  - git clone https://github.com/opencv/opencv_contrib.git
+  - cd opencv
+  - mkdir -p build
+  - cd build
+  - cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_EXAMPLES=off -DBUILD_DOCS=off -DBUILD_SHARED_LIBS=off  -DBUILD_FAT_JAVA_LIB=off -DBUILD_TESTS=off -DBUILD_TIFF=on -DBUILD_JASPER=on -DBUILD_JPEG=on  -DBUILD_OPENEXR=on -DBUILD_PNG=on -DBUILD_TIFF=on -DBUILD_ZLIB=on -DBUILD_opencv_apps=off -DBUILD_opencv_calib3d=off -DBUILD_opencv_contrib=off -DBUILD_opencv_features2d=off -DBUILD_opencv_flann=off -DBUILD_opencv_gpu=off -DBUILD_opencv_java=off -DBUILD_opencv_legacy=off -DBUILD_opencv_ml=off -DBUILD_opencv_nonfree=off -DBUILD_opencv_objdetect=off -DBUILD_opencv_ocl=off -DBUILD_opencv_photo=off -DBUILD_opencv_python=off -DBUILD_opencv_stitching=off -DBUILD_opencv_superres=off -DBUILD_opencv_ts=off -DBUILD_opencv_video=off -DBUILD_opencv_videostab=off -DBUILD_opencv_world=off -DBUILD_opencv_lengcy=off -DBUILD_opencv_lengcy=off -DWITH_1394=off -DWITH_EIGEN=off -DWITH_FFMPEG=off -DWITH_GIGEAPI=off -DWITH_GSTREAMER=off -DWITH_GTK=off -DWITH_PVAPI=off -DWITH_V4L=off -DWITH_LIBV4L=off -DWITH_CUDA=off -DWITH_CUFFT=off -DWITH_OPENCL=off -DWITH_OPENCLAMDBLAS=off -DWITH_OPENCLAMDFFT=off ..
+  - sudo make -j4 install
+  - cd ~
+  - sudo sh -c 'echo "/usr/local/lib" > /etc/ld.so.conf.d/opencv.conf'
+  - sudo ldconfig
+    #install for ffmpeg 4.1.3
+  - sudo add-apt-repository ppa:jonathonf/ffmpeg-4 
+  - sudo apt-get update
+  - sudo apt-get install ffmpeg
+  
+script: 
+  - mkdir -p build
+  - cd build
+  - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON ..
+  - make --silent
+  
+  -ctest
