@@ -35,14 +35,9 @@ install:
   - sudo apt-get update
   - sudo apt-get install ffmpeg
   
-<<<<<<< HEAD
-script: 
-=======
 script:
->>>>>>> f9b2593d9d364a9bc6b5cce35d817579d845dbf8
   - mkdir -p build
   - cd build
   - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DCMAKE_BUILD_TYPE=Coverage -DBUILD_TESTS=ON ..
   - make --silent
-
   -ctest
