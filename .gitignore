@@ -21,4 +21,3 @@ model/.idea/*
 *.log
 *.apk
 *.marks
-/CMakeLists.txt
